@@ -1,9 +1,16 @@
+import React from "react"
+import { useState } from "react"
+
 export const MainPage = () => {
+
+    // Obter a data atual e formatá-la como "Dia/Mês/Ano"
+    const currentDate = new Date().toLocaleDateString('pt-BR');
+
     return (
         <div className="container mx-auto h-screen px-8 py-2  grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-white">
             <div className="lg:col-span-2 p-2 border-2 border-sky-700 rounded-lg overflow-x-auto items-center">
-                <h2>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores earum sunt atque minima doloribus illo nostrum. Deleniti nisi officiis quasi sint atque, doloremque quibusdam unde quaerat amet blanditiis minus hic.
+                <h2 className="border-b-2 border-sky-500 p-3 mx-5">
+                    Lançamentos - {currentDate}
                 </h2>
                 <nav className="my-4">
                     <div className="flex flex-wrap lg:flex-nowrap lg:justify-center md:justify-start">
