@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Login } from '../pages/Login';
+import { categories } from '../types/Categories';
 
 export const Navbar = () => {
+    const [showCategorys, setShowCategorys] = useState(false);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const [showSearchField, setShowSearchField] = useState(false);
     const [isShowLogin, setIsShowLogin] = useState(false);
     const [showUserMenu, setShowUserMenu] = useState(false);
-    const [logged, setLogged] = useState(false); // Utilizando useState para gerenciar o estado do usuário logado
+    const [logged, setLogged] = useState(true); // Utilizando useState para gerenciar o estado do usuário logado
+
+    const toggleMenuCategorys = () => {
+        setShowCategorys((prevState) => !prevState);
+    };
 
     const toggleMobileMenu = () => {
         setShowMobileMenu((prevState) => !prevState);
@@ -33,7 +38,7 @@ export const Navbar = () => {
     return (
         <>
             {/* Top Navbar */}
-            <nav className={`bg-sky-700 text-white py-4 px-8 flex items-center justify-between ${showMobileMenu ? 'h-auto' : 'h-16'}`}>
+            <nav className={`bg-sky-700 text-white py-4 px-8 flex items-center justify-between z-index-0 ${showMobileMenu ? 'h-auto' : 'h-16'} relative`}>
                 {/* Mobile Menu Button */}
                 <div className="lg:hidden">
                     <button
@@ -46,7 +51,6 @@ export const Navbar = () => {
 
                     </button>
                 </div>
-
                 {/* Logo */}
                 <div className="text-2xl font-bold">
                     <a href="/" className="flex flex-shrink-0 items-center bg-sky-700 text-white rounded-md px-3 py-1 hover:shadow-2xl hover:bg-sky-600 text-sm font-medium">
@@ -60,18 +64,38 @@ export const Navbar = () => {
                 </div>
 
                 {/* Desktop Menu */}
-                <div className="hidden lg:flex items-stretch ">
-                    <a href="*" className="text-white hover:bg-sky-600 hover:text-white rounded-md px-3 py-3 text-sm font-medium">
-                        Mangás
-                    </a>
-                    <a href="*" className="text-white hover:bg-sky-600 hover:text-white rounded-md px-3 py-3 text-sm font-medium">
-                        Categorias
+                <div className="hidden lg:flex items-stretch">
+                    <a className="text-white hover:bg-sky-600 hover:text-white rounded-md px-3 py-3 text-sm font-medium">
+                        <Link to={"/category/todos"}>Mangás</Link>
                     </a>
                     <a href="*" className="text-white hover:bg-sky-600 hover:text-white rounded-md px-3 py-3 text-sm font-medium">
                         Grupos/Scans
                     </a>
+                    <div className="relative mt-1">
+                        <button
+                            className="hover:bg-sky-600 text-white rounded-md px-3 py-2 text-sm font-medium inline-flex items-center"
+                            onClick={toggleMenuCategorys}
+                        >
+                            Categorias
+                            <svg className="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
+                            </svg>
+                        </button>
+                        {showCategorys && (
+                            <div
+                                className="z-10 absolute mt-2 w-40 bg-sky-700 border border-gray-300 rounded-md shadow-lg"
+                            >
+                                <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="categorysButton">
+                                    {categories.map((category) => (
+                                        <li key={category.id} className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                            <Link to={`/category/${category.value}`}>{category.name}</Link>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
                 </div>
-
                 {/* Div fixa na direita em ambos os espectos, [desktop, mobile] */}
                 <div className="relative inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                     {/* Search Icon and Field */}
@@ -96,7 +120,7 @@ export const Navbar = () => {
                     <div className="relative ml-3">
                         {logged ? (
                             <button
-                                className="border-2 border-sky-700 hover:bg-sky-700 text-white rounded-md px-3 py-2 text-sm font-medium"
+                                className="border-b-4 border-sky-600 hover:bg-sky-600 text-white rounded-md px-3 py-2 text-sm font-medium"
                                 onClick={toggleUserMenu}
                             >
                                 <svg
@@ -117,45 +141,34 @@ export const Navbar = () => {
                         ) : (
                             <Link to="/login">
                                 <button
-                                    className="border-2 border-sky-700 hover:bg-sky-700 text-white rounded-md px-3 py-2 text-sm font-medium"
+                                    className="hover:bg-sky-600 text-white rounded-md px-3 py-2 text-sm font-medium"
                                 >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth={1.5}
-                                        stroke="currentColor"
-                                        className="w-6 h-6"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-                                        />
-                                    </svg>
+                                    Login
                                 </button>
                             </Link>
                         )}
 
                         {/* Card Modal Popup para mostrar a lista de favoritos, lidos, lendo, etc. */}
                         {logged && showUserMenu && (
-                            <div className="absolute right-0 mt-2 w-40 bg-sky-700 border border-gray-300 rounded-md shadow-lg">
+                            <div className="z-10 absolute right-0 mt-2 w-40 bg-sky-700 border border-gray-300 rounded-md shadow-lg">
                                 <ul>
                                     <li className="px-4 py-2 text-sm hover:bg-gray-600">Favoritos</li>
                                     <li className="px-4 py-2 text-sm hover:bg-gray-600">Lidos</li>
                                     <li className="px-4 py-2 text-sm hover:bg-gray-600">Lendo</li>
-                                    <li className="px-4 py-2 text-sm hover:bg-gray-600"><a href="/" onClick={handleLogout}>
-                                        Sair
-                                    </a></li>
+                                    <li className="px-4 py-2 text-sm hover:bg-gray-600">
+                                        <a href="/" onClick={handleLogout}>
+                                            Sair
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                         )}
                     </div>
                 </div>
-            </nav>
+            </nav >
 
             {/* Mobile Menu */}
-            <div className={`bg-sky-700 text-white m-0 px-4 lg:hidden ${showMobileMenu ? 'block' : 'hidden'}`}>
+            < div className={`bg-sky-700 text-white m-0 px-4 lg:hidden ${showMobileMenu ? 'block' : 'hidden'}`}>
                 <div className="flex flex-col divide-y mb-0">
                     <button type="button" className="py-2 w-full text-left">
                         Mangás
@@ -170,7 +183,8 @@ export const Navbar = () => {
                         Login
                     </button>
                 </div>
-            </div>
+            </div >
         </>
     );
 };
+
